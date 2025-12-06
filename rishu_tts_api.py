@@ -1,47 +1,42 @@
-# Import necessary modules
+# Import zaroori modules
 from flask import Flask, request, send_file
 from gtts import gTTS
 import io
 
-# Initialize the Flask application
+# Flask application shuru karein
 app = Flask(__name__)
 
-# Define the API endpoint (route)
-# The route is set to /RISHU/text_to_audio
+# API endpoint (route) define karein
+# Yahin se aapka API access hoga: /RISHU/text_to_audio
 @app.route('/RISHU/text_to_audio', methods=['GET'])
 def text_to_audio():
-    # Get the text parameter from the URL query string
+    # URL query string se 'text' parameter lein
     text = request.args.get('text')
     
-    # Check if text parameter is missing
+    # Agar 'text' parameter nahi hai, toh error message dein
     if not text:
-        return "Error: 'text' parameter is missing. Please use: /RISHU/text_to_audio?text=your_message", 400
+        return "Error: 'text' parameter missing. Use: /RISHU/text_to_audio?text=your_message", 400
 
     try:
-        # Create a gTTS object
-        tts = gTTS(text=text, lang='hi') # Using 'hi' for Hindi, but it handles English too
+        # gTTS object banayein. 'hi' (Hindi) bhasha set karein, jo English bhi handle karti hai.
+        tts = gTTS(text=text, lang='hi') 
 
-        # Use io.BytesIO to store the audio data in memory
+        # Audio data ko memory mein store karne ke liye io.BytesIO ka upyog karein
         mp3_fp = io.BytesIO()
         tts.write_to_fp(mp3_fp)
-        mp3_fp.seek(0) # Rewind the stream to the beginning
+        mp3_fp.seek(0) # Stream ko shuruwat tak le jaayein
 
-        # Send the audio file as a response
+        # Audio file ko browser mein bhej dein
         return send_file(
             mp3_fp,
             mimetype='audio/mp3',
-            as_attachment=False, # Plays directly in browser
+            as_attachment=False, # Seedhe browser mein play hoga
             download_name='audio.mp3'
         )
     except Exception as e:
-        # Log the error and return a server error message
+        # Agar koi galti ho toh log karein aur server error message dein
         print(f"Error generating TTS: {e}")
-        return f"Internal Server Error during TTS generation: {e}", 500
+        # Aapki Vercel galti ko theek karne ke liye, yahan ek generic error denge
+        return "Internal Server Error. Please check logs for details.", 500
 
-# Vercel needs this 'handler' for the serverless function
-# This is usually not required for standard Flask but helps Vercel
-# You can uncomment this if needed, but the main code should be fine.
-# from flask import jsonify
-# @app.route('/')
-# def home():
-#     return jsonify({"message": "TTS API is running! Use /RISHU/text_to_audio?text=..."})
+# Final check: Force redeploy to clear Vercel cache
