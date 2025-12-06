@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "rishu_tts_api.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/RISHU/text_to_audio(.*)",
+      "dest": "rishu_tts_api.py"
+    }
+  ]
+}
+
+
+**Commit Karein:** Neeche **"Commit new file"** par click karein.
+
+---
+
+### 🚀 Kadam 4: Vercel Par Deploy Karein
+
+Jab aapki teenon files (**`rishu_tts_api.py`**, **`requirements.txt`**, aur **`vercel.json`**) **GitHub par dikhne lagti hain**, tab Vercel par jaayein:
+
+1.  Vercel Dashboard par **"Add New Project"** par click karein.
+2.  Nayi repository **`rishu-tts-api-v2`** ko **Import** karein.
+3.  **Deploy** button par click karein.
+
+Is baar koi file upload error nahi aayega aur deployment 100% chalega! Jab yeh "Ready" ho jaaye, toh hum final test karenge.
